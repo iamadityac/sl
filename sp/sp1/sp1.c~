@@ -1,0 +1,238 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct sym
+{
+    int sys_cnt;
+    char sys_name[10];
+    int addr;
+};
+struct ltable
+{
+    int lit_cnt;
+    char lit_name[10];
+    int addr;
+};
+struct ptable
+{
+    int lindex;
+};
+int isysm=0,ilit=0,ipt=0,poolflag=1,flag=0,tpt=0;
+struct sym st[10]; struct ltable lt[10]; struct ptable pt[10];
+char mot[10][20]={"MOVER","MOVEM","ADD","SUB","MULT","DIV","COMP","PRINT","READ"};
+char pot[5][20]={"START","END","LTORG","ORIGIN","END"};
+char reg[5][20]={"AREG","BREG","CREG","DREG"};
+char dl[2][20]={"DC","DS"};
+
+
+void display(struct sym st[10])
+{
+    int i;
+    printf("\n\tEnter the sys_cnt   sys_name  address");
+	for(i=0;i<2;i++)
+	printf("\n\t%d  %s  %d",st[i].sys_cnt,st[i].sys_name,st[i].addr);		
+}
+int searchmot(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,mot[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+
+int searchdl(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,dl[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+int searchpot(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,pot[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+int searchreg(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,reg[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+int searchlit(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,lt[i].lit_name)==0)
+        return lt[i].lit_cnt;
+    }
+    return -1;
+}
+int searchsym(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,st[i].sys_name)==0)
+        return st[i].sys_cnt;
+    }
+    return -1;
+}
+void addinpool(int lit)
+{
+    pt[ipt].lindex=lit;
+    ipt++;
+}
+void addsym(int count,char *ch,int addr)
+{
+    strcpy(st[isysm].sys_name,ch);
+    st[isysm].addr=0;
+    st[isysm++].sys_cnt=isysm;
+}
+
+void addlit(int count,char *ch,int addr)
+{
+    strcpy(lt[ilit].lit_name,ch);
+    lt[ilit].addr=0;
+    lt[ilit++].lit_cnt=ilit;
+}
+int main()
+{
+	FILE *fp,*fp1;
+	int i,n,cnt,cntm,lc;
+	char t1[10],t2[10],t3[10],t4[10],buffer[10];
+	fp=fopen("sp1.txt","r");
+	fp1=fopen("op.txt","w");
+	while(fgets(buffer,200,fp))
+	{
+	    n=sscanf(buffer,"%s%s%s%s",t1,t2,t3,t4);
+	    switch(n)
+	    {
+            case 1:
+                cnt=searchpot(t1);  
+                if(cnt==1)
+                {
+                    fprintf(fp1,"(AD, 01) - (C, 0)");
+                    lc=0;
+                } 
+                else
+                if(cnt==2 || cnt==3)
+                {
+                    if(cnt==3)
+                    {
+                        poolflag=1;
+                        for(i=pt[ipt-1].lindex;i<=ilit;i++)
+                            {
+                                fprintf(fp1,"%d) (AD, 03) - %s\n",lc,&lt[i].lit_name[1]);           
+                                lt[i].addr=lc++;
+                                tpt=ipt;
+                            }
+                    }
+                    else
+                    {
+                        fprintf(fp1,"%d) (AD, 02) - -\n",lc);
+                    }
+                }
+                else
+                if(cnt==4)
+                {
+                    lc=0;   
+                }
+                else
+                if(cnt==-1)
+                {
+                    printf("\n\tError is generated!!!");
+                }
+            break;
+            case 2://t2=register remaining
+                cnt=searchpot(t1);  
+                cntm=searchmot(t1);  
+
+                if(cnt==1)
+                {
+                    lc=atoi(t2);
+                    fprintf(fp1,"(AD, 02) - (C, %d)\n",lc);
+                } 
+                else 
+                if(cnt==4)
+                {
+                    if(searchsym(t2)==-1)
+                    {
+                        lc=atoi(t2);
+                    }
+                    else
+                    {
+                        //lc=st[i]
+                    }
+                }
+                if(cntm==8 || cntm==9)
+                {
+                    if(t2[0]=='=')
+                    {
+                        if(poolflag==1)
+                        {
+                            addlit(ilit,t2,0);
+                            addinpool(ilit);
+                            fprintf(fp1,"%d) (IS, %d) - (L, %d)\n",lc,cntm,searchlit(t2));
+                        }else
+                        {
+                            if(searchlit(t2)==-1)
+                            {
+                                addlit(ilit,t2,0);
+                                fprintf(fp1,"%d) (IS, %d) - (L, %d)\n",lc,cntm,searchlit(t2));
+                            }else
+                            {
+                                fprintf(fp1,"%d) (IS, %d) - (L, %d)\n",lc,cntm,searchlit(t2));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(searchsym(t2)==-1)
+                        {
+                            addsym(isysm,t2,0);
+                            fprintf(fp1,"%d) (IS, %d) - (S, %d)\n",lc,cntm,searchsym(t2));
+                        }
+                        else
+                        {
+                            fprintf(fp1,"%d) (IS, %d) - (S, %d)\n",lc,cntm,searchsym(t2));
+                        }
+                    }
+                    //lc++;
+                }
+            break;
+            case 3:
+                printf("\n\tHELLo");
+            break;
+        }
+	}
+	fclose(fp);
+	fclose(fp1);
+	printf("\n\tLTABLE\n\tindex\tname\taddress\n");
+	for(i=0;i<ilit;i++)
+	{
+	    printf("\t%d\t%s\t%d\n",lt[i].lit_cnt,lt[i].lit_name,lt[i].addr);
+	}
+	printf("\n\tPOOL-TABLE\n\tindex\n");
+	for(i=0;i<ipt;i++)
+	{
+	    printf("\t%d\n",pt[i].lindex);
+	}
+	
+	return 0;
+}

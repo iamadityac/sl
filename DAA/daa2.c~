@@ -1,0 +1,53 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+void sort(int *array,int n)
+{
+	int i,j,temp;
+	for(i=1;i<n;i++)
+	{
+		for(j=0;j<n-i;j++)
+		{
+			if(*(array+j) > *(array+j+1))
+			{
+				temp=*(array+j);
+				*(array+j)=*(array+j+1);
+				*(array+j+1)=temp;
+			}
+		}
+	}
+}
+int main()
+{
+	int *array,n,i,j;
+	float sum=0,MRT=0;
+	
+	printf("\n\t\t**Optimal Tape [GREEDY METHOD]**\n");
+	
+	printf("\n\tEnter n(files) >>");
+	scanf("%d",&n);
+	
+	array=(int *)malloc(sizeof(int)*n);
+	
+	printf("\n\tEnter sizes of files on storage tape >>");
+	for(i=0;i<n;i++)
+		scanf("%d",(array+i));
+	
+	sort(array,n);
+	
+	printf("\n\tOptimal sequence of files on storage tape >>");
+	for(i=0;i<n;i++)
+		printf("%d ",*(array+i));
+	
+	for(i=0;i<n;i++)
+	{
+		sum=0;
+		for(j=0;j<=i;j++)
+			sum+=*(array+j);
+		MRT+=sum;
+	}
+	printf("\n\tMinimum Retrieval Time = %f",MRT/n);
+		
+	printf("\n");
+	return 0;
+}

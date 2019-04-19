@@ -1,0 +1,134 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct sym
+{
+    int sys_cnt;
+    char sys_name[10];
+    int addr;
+};
+struct ltable
+{
+    int lit_cnt;
+    char lit_name[10];
+    int addr;
+};
+struct ptable
+{
+    int lindex;
+};
+int isysm=0,ilit=0,ipt=0,poolflag=1,flag=0,tpt=0;
+struct sym st[10]; struct ltable lt[10]; struct ptable pt[10];
+char mot[10][20]={"MOVER","MOVEM","ADD","SUB","MULT","DIV","COMP","PRINT","READ"};
+char pot[5][20]={"START","END","LTORG","ORIGIN","END"};
+char reg[5][20]={"AREG","BREG","CREG","DREG"};
+char dl[2][20]={"DC","DS"};
+
+/*
+void display(struct sym st[10])
+{
+    int i;
+    printf("\n\tEnter the sys_cnt   sys_name  address");
+	for(i=0;i<2;i++)
+	printf("\n\t%d  %s  %d",st[i].sys_cnt,st[i].sys_name,st[i].addr);		
+}
+int searchmot(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,mot[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+
+int searchdl(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,dl[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+int searchpot(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,pot[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+int searchreg(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,reg[i])==0)
+        return i+1;
+    }
+    return -1;
+}
+int searchlit(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,lt[i].lit_name)==0)
+        return lt[i].lit_cnt;
+    }
+    return -1;
+}
+int searchsym(char *ch)
+{
+    int i;
+    for(i=0;i<10;i++)
+    {
+        if(strcmp(ch,st[i].sys_name)==0)
+        return st[i].sys_cnt;
+    }
+    return -1;
+}
+void addinpool(int lit)
+{
+    pt[ipt].lindex=lit;
+    ipt++;
+}
+void addsym(int count,char *ch,int addr)
+{
+    strcpy(st[isysm].sys_name,ch);
+    st[isysm].addr=0;
+    st[isysm++].sys_cnt=isysm;
+}
+
+void addlit(int count,char *ch,int addr)
+{
+    strcpy(lt[ilit].lit_name,ch);
+    lt[ilit].addr=0;
+    lt[ilit++].lit_cnt=ilit;
+}
+*/
+int main()
+{
+	FILE *fp,*fp1;
+	int i=0,n=0,cnt=0,cntm=0,lc=0;
+	char t1[10],t2[10],t3[10],t4[10],buffer[10];
+	fp=fopen("sp1.txt","r");
+	fp1=fopen("op.txt","w");
+	while(fgets(buffer,200,fp))
+	{
+	    n=sscanf(buffer,"%s%s%s%s",t1,t2,t3,t4);
+	    switch(n)
+	    {
+            case 1:
+            break;
+        }
+    }
+    fclose(fp);
+    fclose(fp1); 
+    return 0;  
+}         

@@ -1,0 +1,89 @@
+#include<stdio.h>
+#include<math.h>
+
+int board[10],count;
+
+void print(int n)
+{
+	int i,j;
+	printf("\nSolution %d ::\n",++count);
+	for(i=1;i<=n;i++)
+		printf("\t%d",i);
+	for(i=1;i<=n;i++)
+	{
+		printf("\n%d",i);
+		for(j=1;j<=n;j++)
+		{
+			if(board[i]==j)
+				printf("\tQ");
+			else
+				printf("\t-");
+		}
+	}
+	printf("\n\n");
+}
+
+int place(int column,int row)
+{
+	int i;
+	printf("\n\tCheck for [%d][%d]",row,column);
+	for(i=1;i<=column-1;i++)
+		if(board[i]==row || abs(board[i]-row)==abs(i-column))
+			return 0;
+	printf("\nplaced");
+	return 1;
+}
+
+void queen(int column,int n)
+{
+	int row;
+	for(row=1;row<=n;row++)
+	{
+		if(place(column,row))
+		{
+			board[column]=row;
+			if(column==n)
+				print(n);
+			else
+				queen(column+1,n);
+		}
+	}
+}
+
+//	//	//	//	//
+
+int main()
+{
+	int n;
+
+	printf("\n\tEnter the no. of queens >>");
+	scanf("%d",&n);
+	if(n==2 || n==3)
+		printf("\n\tNo Feasible Solution\n");
+	else
+		queen(1,n);
+		
+	printf("\n");
+	return 0;
+}
+/*
+	Enter the no. of queens >>4
+
+Solution 1 ::
+	1	2	3	4
+1	-	Q	-	-
+2	-	-	-	Q
+3	Q	-	-	-
+4	-	-	Q	-
+
+
+Solution 2 ::
+	1	2	3	4
+1	-	-	Q	-
+2	Q	-	-	-
+3	-	-	-	Q
+4	-	Q	-	-
+
+
+
+*/
